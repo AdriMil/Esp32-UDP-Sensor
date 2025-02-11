@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="/dev/25/fe/clock.js" defer></script>
+    <title>Esp 32 - Wifi & UDP Manager</title>
+</head>
+
+<body >
+    <header>
+    </header>    
+    <div class="form-container">
+        <h2>Wifi and UDP configuration</h2>
+        <form action='/setwifi' method='post'>
+            <label for="ssid">SSID :</label>
+            <input type="text" id="ssid" name="ssid" placeholder="Enter wifi name" required>
+
+            <label for="password">Password :</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+            <label for="udp-port">UDP Port :</label>
+            <input type="number" id="udp-port" name="udp-port" min="5000" max="65535" value="5000" required>
+
+            <label for="msg-frequency">UDP messages frequency (s):</label>
+            <input type="number" id="msg-frequency" name="msg-frequency" min="1" max="3600" value="60" required>
+
+
+            <button type="submit">Send</button>
+        </form>
+        <div class="buttons">
+            <button onclick="location.href='index.html'">Back</button>
+        </div>
+    </div>
+</body>
+
+<footer>
+    <p>&copy; 2025 - Ad M. Tous droits réservés.</p>
+    <p>Version 1.0.0</p>
+</footer>
+</html>

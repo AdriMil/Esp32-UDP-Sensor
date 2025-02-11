@@ -1,0 +1,291 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+header {
+  position: fixed;              /* Fixe le header en haut */
+  top: 0;                       /* Alignement en haut */
+  width: 100%;                  /* Le header prend toute la largeur de la page */
+  display: flex;                /* Utilisation de Flexbox pour aligner les éléments */
+  justify-content: space-between; /* Espace maximal entre le titre et le bouton */
+  align-items: center;          /* Centre verticalement le contenu du header */
+  padding: 10px 20px;          /* Espace autour du contenu */
+  background-color: #333;      /* Couleur de fond du header */
+  color: white;                 /* Couleur du texte */
+  z-index: 1000;                /* S'assure que le header est au-dessus du contenu */
+  height: 50px;                 /* Hauteur du header */
+}
+
+header h1 {
+  color: white;                /* Couleur du texte */
+  text-align: center;          /* Centre le texte du titre */
+  position: static;
+}
+
+#clock {
+  font-size: 16px;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.icon-button svg {
+  width: 24px;
+  height: 24px;
+  fill: white;
+}
+.body-content {
+  margin-top: 2000px;             /* Ajuste cette valeur en fonction de la hauteur du header */
+}
+
+body, html {
+  height: 100%;
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0; /* Couleur de fond claire */
+} 
+
+.sensor-data-container {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+.rectangle {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre douce */
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+h1 {
+  font-size: 24px;
+  color: #333333;
+  margin-bottom: 30px;
+}
+
+h1[id="ErrorTitle"] {
+  text-align: center;
+  font-size: 200px;
+  color: #333333;
+  margin-bottom: 30px;
+}
+
+.sensor-data p {
+  font-size: 18px;
+  color: #555555;
+  margin: 15px 0;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.buttons button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.form-container {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre douce */
+  max-width: 400px;
+  width: 100%;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+p[id="ErrorContent"]{
+  text-align: center;
+}
+
+label {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #555555;
+}
+
+input[type="text"], input[type="password"], input[type="number"] {
+  padding: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  width: 100%;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+  border-color: #007BFF; /* Couleur de focus */
+  outline: none;
+}
+
+button[type="submit"] {
+  padding: 10px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: #0056b3; /* Couleur au survol */
+}
+
+button:active {
+  background-color: #003d80; /* Couleur au clic */
+}
+
+footer {
+  position: absolute;
+  bottom: 20px; /* Distance par rapport au bas de la page */
+  width: 100%;
+  text-align: center;
+  color: #777777; /* Couleur de texte plus clair */
+  font-size: 14px;
+}
+
+footer p {
+  margin: 5px 0;
+}
+
+.data-box {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 5px;
+}
+
+.data-box:hover {
+    transform: translateY(-15px); /* Effet de levée au survol */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.data-box p {
+    font-size: 18px;
+    color: #555555;
+}
+
+.data-box span {
+    font-weight: bold;
+    color: #007BFF; /* Bleu pour les valeurs des capteurs */
+}
+
+
+@media (max-width: 500px) {
+  .form-container {
+      padding: 20px;
+      max-width: 100%;
+  }
+}
+
+
+
+
+/* Slider  */
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  
+}
+
+/* Cache la checkbox */
+.switch input{
+  opacity: 0; 
+}
+
+/* Le style par défaut du slider (gris) */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 15px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+/* Quand on active le switch (état "On") */
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Le texte ON/OFF */
+.slider:after {
+  content: 'Off';
+  color: white;
+  display: block;
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+}
+
+input:checked + .slider:after {
+  content: 'On';
+  left: 10px;
+  right: auto;
+}
+

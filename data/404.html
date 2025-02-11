@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="/dev/25/fe/clock.js" defer></script>
+    <title>404 - Page non trouvée</title>
+</head>
+<body onload="startClock()">
+    <header>
+        <div id="clock">00/00/0000 00:00:00</div>
+        <button onclick="location.href='/'" class="icon-button">
+            <svg viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </button>
+    </header>    
+    <div class="error-container">
+        <h1 id="ErrorTitle">404</h1>
+        <p id="ErrorContent">Oups ! La page que vous recherchez est introuvable.</p>
+    </div>
+</body>
+<footer>
+    <p>&copy; 2025 - Ad M. Tous droits réservés.</p>
+    <p>Version 1.0.0</p>
+</footer>
+</html>
