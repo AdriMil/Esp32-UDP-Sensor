@@ -1,0 +1,3 @@
+[submodule "lib/centralized-libs"]
+	path = lib/centralized-libs
+	url = https://github.com/AdriMil/Esp32-libs.git
