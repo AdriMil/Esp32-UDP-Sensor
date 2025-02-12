@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Restarting</title>
+    <script>
+        function autoRefresh() {
+            console.log("Page will be refreshed in 3 secondes")
+            setInterval(function(){
+                location.reload();
+            }, 3000);
+        }
+    </script>
+</head>
+<body onload="autoRefresh()">
+    <header>
+    </header>    
+    <div class="rebboting-container">
+        <h1 id="RebootingTitle">Rebooting</h1>
+        <p id="RebootingContent">ESP device is restarting ... </p>
+        <br>
+    </div>
+</body>
+<footer>
+    <p>&copy; 2025 - Ad M. Tous droits réservés.</p>
+    <p>Version 1.0.0</p>
+</footer>
+</html>

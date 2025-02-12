@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="/dev/25/fe/clock.js" defer></script>
+    <title>Parameters</title>
+</head>
+
+<body>
+    <header>
+    </header>    
+    <div class="form-container">
+        <h2>Parameters</h2>
+        <script>
+            function confirmAction() {
+                return confirm("Êtes-vous sûr de bien vouloir effectuer cette action ?");
+            }
+        </script>
+        <form action='/reset-memory' method='post' onsubmit="return confirmAction();">
+            <button type="submit">Reset memory</button>
+        </form>
+        <div class="buttons">
+            <button onclick="location.href='/'">Back</button>
+        </div>
+    </div>
+</body>
+
+<footer>
+    <p>&copy; 2025 - Ad M. Tous droits réservés.</p>
+    <p>Version 1.0.0</p>
+</footer>
+</html>
