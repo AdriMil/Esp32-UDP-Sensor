@@ -28,6 +28,32 @@ uint64_t time_to_sleep = 30ULL ; //Sleep time // TO REMOVE LATER -> Will be sele
 const int LED_PIN = 2;  // PCB led
 
 /**
+ * @brief Check if a string can be converted to Int
+ * 
+ * @param str 
+ * @return true 
+ * @return false 
+ */
+ bool isInteger(const String& str) {
+  char* endptr;
+  strtol(str.c_str(), &endptr, 10);
+  return *endptr == '\0';
+}
+
+/**
+ * @brief Check if a string can be converted to Float
+ * 
+ * @param str 
+ * @return true 
+ * @return false 
+ */
+bool isFloat(const String& str) {
+  char* endptr;
+  strtod(str.c_str(), &endptr);
+  return *endptr == '\0';
+}
+
+/**
  * @brief Print wakeUp reason.
  * 
  * @return esp_sleep_wakeup_cause_t 
