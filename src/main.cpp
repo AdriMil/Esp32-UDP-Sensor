@@ -23,8 +23,9 @@ const char* udpAddress = "10.0.0.5"; // Target Ip adress // TO REMOVE LATER -> W
 const int udpPort = 5000 ; // UDP Port number // TO REMOVE LATER -> Will be selected within UI
 WiFiUDP udp;
 
-unsigned long time_save ; //Variable used to store current time
-uint64_t time_to_sleep = 30ULL ; //Sleep time // TO REMOVE LATER -> Will be selected within UI
+unsigned long time_save; //Variable used to store current time
+uint64_t time_to_sleep; //Sleep time
+const uint64_t default_time_sleep = 60ULL; //DefaultSleep time
 
 const int LED_PIN = 2;  // PCB led
 
@@ -185,7 +186,24 @@ void setup() {
   if(wifi_state == 200 ){ //Connection wifi is working well -> Start DeepSleep cycle
     LOG_TRACE("WifiState equal to 200");
 
-  initAHT10(); //init AHT10 sensor (T° and H sensor)
+    if(preferenceKeyExist(preferences, "udpMsgFreq")){ 
+      LOG_INFO("Udp message frequency found exist in preference");
+      LOG_INFO("udpMsgFreq value: ");
+      LOG_INFO(preferences.getInt("udpMsgFreq"));
+      int udpMsgFreq = (preferences.getInt("udpMsgFreq",default_time_sleep));
+
+      if (isInteger(preferences.getString("udpMsgFreq"))){
+        LOG_INFO("udpMsgFreq can be Int and is not a float");
+        // time_to_sleep = static_cast<uint64_t>(udpMsgFreq);
+        time_to_sleep = default_time_sleep ;
+      } else{
+        LOG_INFO("udpMsgFreq cannot be converted to Int");
+        time_to_sleep = default_time_sleep ;
+      }
+    } else{
+      LOG_INFO("udpMsgFreq does not exist in preference - use default time sleep");
+      time_to_sleep = default_time_sleep ;
+    }
 
     initAHT10(); //Init T° and H sensors to do measure.
     if (wasWakeUpByButton()) {
