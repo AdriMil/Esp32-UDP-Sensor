@@ -10,6 +10,7 @@
 
 #define s_TO_us_FACTOR 1000000  //convert seconds to microseconds
 #define WAKEUP_PIN  GPIO_NUM_33 // Pin used for wake-up esp32 from DeepSleep
+#define RESET_PIN  GPIO_NUM_34 // Pin used for wake-up esp32 from DeepSleep
 
 Preferences preferences;
 AsyncWebServer server(80);   // Create asynchrone web server
@@ -154,6 +155,15 @@ void deepSleep(){
   esp_deep_sleep_start();
 }
 
+/**
+ * @brief Clear preference memory and restart esp32
+ * 
+ */
+void resetPreference(){
+  preferences.clear();
+  ESP.restart();
+}
+
 void setup() {
 
   Serial.begin(115200);
@@ -161,6 +171,7 @@ void setup() {
 
   pinMode(LED_PIN, OUTPUT);
   pinMode(WAKEUP_PIN, INPUT);
+  pinMode(RESET_PIN, INPUT);
   digitalWrite(LED_PIN, LOW);
   getWakeupReason();
 
@@ -187,9 +198,14 @@ void setup() {
       while((millis()-time_save)<15000){
         if (digitalRead(WAKEUP_PIN) == LOW){  //If there is an other click on the button during this while period
           LOG_INFO("Button pressed during while loop");
-          delay(1000);
+          delay(500);
           time_save=millis(); // Restart the while tempo
           onWakeUp(); //Send UDP message
+        }
+        if (digitalRead(RESET_PIN) == LOW){  //If there a click on the reset button during this while period
+          delay(500);
+          LOG_INFO("Reset Button pressed during while loop");
+          resetPreference();
         }
       }
     }
