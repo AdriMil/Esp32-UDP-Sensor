@@ -8,9 +8,9 @@
 #include "Wifi/SetUpAccessPoint.h"
 #include "Miscellaneous/TypeModification.h"
 #include "Miscellaneous/MyPreferences.h"
+#include "Miscellaneous/MyDeepSleep.h"
 #include <IPAddress.h>
 
-#define s_TO_us_FACTOR 1000000  //convert seconds to microseconds
 #define WAKEUP_PIN  GPIO_NUM_33 // Pin used for wake-up esp32 from DeepSleep
 #define RESET_PIN  GPIO_NUM_34 // Pin used for wake-up esp32 from DeepSleep
 
@@ -78,28 +78,6 @@ bool isValidIPAddress(const String& ip) {
 }
 
 /**
- * @brief Print wakeUp reason.
- * 
- * @return esp_sleep_wakeup_cause_t 
- */
-esp_sleep_wakeup_cause_t getWakeupReason(){
-
-  esp_sleep_wakeup_cause_t wakeupReason;
-  wakeupReason = esp_sleep_get_wakeup_cause();
-
-  switch(wakeupReason)
-  {
-    case ESP_SLEEP_WAKEUP_EXT0 : LOG_INFO("Wakeup caused by external signal using RTC_IO"); break;
-    case ESP_SLEEP_WAKEUP_EXT1 : LOG_INFO("Wakeup caused by external signal using RTC_CNTL"); break;
-    case ESP_SLEEP_WAKEUP_TIMER : LOG_INFO("Wakeup caused by timer"); break;
-    case ESP_SLEEP_WAKEUP_TOUCHPAD : LOG_INFO("Wakeup caused by touchpad"); break;
-    case ESP_SLEEP_WAKEUP_ULP : LOG_INFO("Wakeup caused by ULP program"); break;
-    default : Serial.printf("Wakeup was not caused by deep sleep: %d\n", wakeupReason); break;
-  }
-  return wakeupReason;
-}
-
-/**
  * @brief Will switch on and off the led
  * @note Defined the blinking during 1s.
  */
@@ -133,36 +111,6 @@ void onWakeUp(){
   readAHT10Values();
   udpMessage();
   ledBlinking();
-}
-
-/**
- * @brief Check if the esp32 wake up by using a WakeUp button
- * 
- * @return true 
- * @return false 
- */
-bool wasWakeUpByButton() {
-  esp_sleep_wakeup_cause_t wakeupReason = getWakeupReason();
-  if (wakeupReason==ESP_SLEEP_WAKEUP_EXT0){
-    LOG_INFO("Wake up using button");
-    return true;
-  }else{
-    LOG_INFO("Wake up wihtout button");
-    return false;
-  }
-}
-
-/**
- * @brief Call deepsleep initialisation and start
- * 
- */
-void deepSleep(){
-  LOG_TRACE("Into Deepsleep function");
-  esp_sleep_enable_timer_wakeup(time_to_sleep * s_TO_us_FACTOR);
-  esp_sleep_enable_ext0_wakeup(WAKEUP_PIN, 0);
-  LOG_INFO("ESP32 Will sleep in 1 seconds...");
-  delay(1000);
-  esp_deep_sleep_start();
 }
 
 void setup() {
@@ -225,7 +173,7 @@ void setup() {
       }
     }
     onWakeUp();
-    deepSleep();
+    deepSleep(time_to_sleep, WAKEUP_PIN);
 }
 
   // Init LittleFS
