@@ -1,18 +1,19 @@
 #include <Arduino.h>
 #include <LittleFS.h>
 #include <DebugLog.h>
-#include <Preferences.h>
 #include <WiFiUdp.h>
 #include <ESPAsyncWebServer.h>
 #include "Sensors/AHT10/AHT10.h"
 #include "Wifi/CheckWifiConnection.h"
 #include "Wifi/SetUpAccessPoint.h"
+#include "Miscellaneous/TypeModification.h"
+#include "Miscellaneous/MyPreferences.h"
+#include "Miscellaneous/MyDeepSleep.h"
+#include <IPAddress.h>
 
-#define s_TO_us_FACTOR 1000000  //convert seconds to microseconds
 #define WAKEUP_PIN  GPIO_NUM_33 // Pin used for wake-up esp32 from DeepSleep
 #define RESET_PIN  GPIO_NUM_34 // Pin used for wake-up esp32 from DeepSleep
 
-Preferences preferences;
 AsyncWebServer server(80);   // Create asynchrone web server
 
 const char* ssid_ap = "ESP32";  // Network name in AccessPoint mod
@@ -20,62 +21,20 @@ const char* ssid_ap = "ESP32";  // Network name in AccessPoint mod
 const char* password_ap = "123456789"; // Password name in AccessPoint mod.
 
 const char* udpAddress = "10.0.0.5"; // Target Ip adress // TO REMOVE LATER -> Will be selected within UI
-const int udpPort = 5000 ; // UDP Port number // TO REMOVE LATER -> Will be selected within UI
 WiFiUDP udp;
 
 unsigned long time_save; //Variable used to store current time
+
+// Sleep frequency data:
 uint64_t time_to_sleep; //Sleep time
-const uint64_t default_time_sleep = 60ULL; //DefaultSleep time
+const uint64_t default_time_sleep = 60ULL; //Default sleep time
+const char* key_udp_msg_frequency = "udpMsgFreq"; //Preference key name
+
+const char* key_udp_port = "udpPort"; //Preference key name
+const uint16_t default_udp_port = 5000; //Default upd port
+uint16_t udpPort ; // UDP Port number
 
 const int LED_PIN = 2;  // PCB led
-
-/**
- * @brief Check if a string can be converted to Int
- * 
- * @param str 
- * @return true 
- * @return false 
- */
- bool isInteger(const String& str) {
-  char* endptr;
-  strtol(str.c_str(), &endptr, 10);
-  return *endptr == '\0';
-}
-
-/**
- * @brief Check if a string can be converted to Float
- * 
- * @param str 
- * @return true 
- * @return false 
- */
-bool isFloat(const String& str) {
-  char* endptr;
-  strtod(str.c_str(), &endptr);
-  return *endptr == '\0';
-}
-
-/**
- * @brief Print wakeUp reason.
- * 
- * @return esp_sleep_wakeup_cause_t 
- */
-esp_sleep_wakeup_cause_t getWakeupReason(){
-
-  esp_sleep_wakeup_cause_t wakeupReason;
-  wakeupReason = esp_sleep_get_wakeup_cause();
-
-  switch(wakeupReason)
-  {
-    case ESP_SLEEP_WAKEUP_EXT0 : LOG_INFO("Wakeup caused by external signal using RTC_IO"); break;
-    case ESP_SLEEP_WAKEUP_EXT1 : LOG_INFO("Wakeup caused by external signal using RTC_CNTL"); break;
-    case ESP_SLEEP_WAKEUP_TIMER : LOG_INFO("Wakeup caused by timer"); break;
-    case ESP_SLEEP_WAKEUP_TOUCHPAD : LOG_INFO("Wakeup caused by touchpad"); break;
-    case ESP_SLEEP_WAKEUP_ULP : LOG_INFO("Wakeup caused by ULP program"); break;
-    default : Serial.printf("Wakeup was not caused by deep sleep: %d\n", wakeupReason); break;
-  }
-  return wakeupReason;
-}
 
 /**
  * @brief Will switch on and off the led
@@ -113,58 +72,6 @@ void onWakeUp(){
   ledBlinking();
 }
 
-/**
- * @brief Check if ssid exist in preference memory
- * 
- * @param preferences 
- * @param keyToCheck 
- * @return true 
- * @return false 
- * @note If the key does not exist, preferences.getString("ssid", "") return ""
- */
-bool preferenceKeyExist(Preferences& preferences, String keyToCheck){
-  return !preferences.getString("ssid", "").isEmpty();
-}
-
-/**
- * @brief Check if the esp32 wake up by using a WakeUp button
- * 
- * @return true 
- * @return false 
- */
-bool wasWakeUpByButton() {
-  esp_sleep_wakeup_cause_t wakeupReason = getWakeupReason();
-  if (wakeupReason==ESP_SLEEP_WAKEUP_EXT0){
-    LOG_INFO("Wake up using button");
-    return true;
-  }else{
-    LOG_INFO("Wake up wihtout button");
-    return false;
-  }
-}
-
-/**
- * @brief Call deepsleep initialisation and start
- * 
- */
-void deepSleep(){
-  LOG_TRACE("Into Deepsleep function");
-  esp_sleep_enable_timer_wakeup(time_to_sleep * s_TO_us_FACTOR);
-  esp_sleep_enable_ext0_wakeup(WAKEUP_PIN, 0);
-  LOG_INFO("ESP32 Will sleep in 1 seconds...");
-  delay(1000);
-  esp_deep_sleep_start();
-}
-
-/**
- * @brief Clear preference memory and restart esp32
- * 
- */
-void resetPreference(){
-  preferences.clear();
-  ESP.restart();
-}
-
 void setup() {
 
   Serial.begin(115200);
@@ -186,22 +93,19 @@ void setup() {
   if(wifi_state == 200 ){ //Connection wifi is working well -> Start DeepSleep cycle
     LOG_TRACE("WifiState equal to 200");
 
-    if(preferenceKeyExist(preferences, "udpMsgFreq")){ 
-      LOG_INFO("Udp message frequency found exist in preference");
-      LOG_INFO("udpMsgFreq value: ");
-      LOG_INFO(preferences.getInt("udpMsgFreq"));
-      int udpMsgFreq = (preferences.getInt("udpMsgFreq",default_time_sleep));
+    if(preferenceIntKeyExist(preferences, key_udp_port)){
+      LOG_INFO("udpPort found and is not default values");
+      udpPort = convertInt32ToUInt16(preferences.getInt(key_udp_port)); //Value converted from int_32 (preference answer format) to uint16 (udp port format)
+      LOG_INFO("udpPort value after convertion: %u",udpPort);
+    }else{
+      udpPort = default_udp_port;
+    }
 
-      if (isInteger(preferences.getString("udpMsgFreq"))){
-        LOG_INFO("udpMsgFreq can be Int and is not a float");
-        // time_to_sleep = static_cast<uint64_t>(udpMsgFreq);
-        time_to_sleep = default_time_sleep ;
-      } else{
-        LOG_INFO("udpMsgFreq cannot be converted to Int");
-        time_to_sleep = default_time_sleep ;
-      }
+    if(preferenceUint64_KeyExist(preferences, key_udp_msg_frequency)){ 
+      LOG_INFO("udpMsgFreq found and is not default values");
+      time_to_sleep = preferences.getULong64(key_udp_msg_frequency, default_time_sleep);
     } else{
-      LOG_INFO("udpMsgFreq does not exist in preference - use default time sleep");
+      LOG_INFO("udpMsgFreq does not exist or his default is 0 - use default time sleep");
       time_to_sleep = default_time_sleep ;
     }
 
@@ -223,12 +127,12 @@ void setup() {
         if (digitalRead(RESET_PIN) == LOW){  //If there a click on the reset button during this while period
           delay(500);
           LOG_INFO("Reset Button pressed during while loop");
-          resetPreference();
+          resetPreference(preferences);
         }
       }
     }
     onWakeUp();
-    deepSleep();
+    deepSleep(time_to_sleep, WAKEUP_PIN);
 }
 
   // Init LittleFS
