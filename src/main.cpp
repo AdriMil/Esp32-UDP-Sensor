@@ -7,6 +7,7 @@
 #include "Sensors/AHT10/AHT10.h"
 #include "Wifi/CheckWifiConnection.h"
 #include "Wifi/SetUpAccessPoint.h"
+#include <IPAddress.h>
 
 #define s_TO_us_FACTOR 1000000  //convert seconds to microseconds
 #define WAKEUP_PIN  GPIO_NUM_33 // Pin used for wake-up esp32 from DeepSleep
@@ -53,6 +54,21 @@ bool isFloat(const String& str) {
   char* endptr;
   strtod(str.c_str(), &endptr);
   return *endptr == '\0';
+}
+
+/**
+ * @brief Check if a string has IP adress patter
+ * 
+ * @param ip 
+ * @return true 
+ * @return false 
+ * @note true: 192.168.1.1, 255.255.255.255
+ * @note false: 300.168.1.1, abc.def.ghi.jkl, 192.168.1
+ * 
+ */
+bool isValidIPAddress(const String& ip) {
+  IPAddress parsedIP;
+  return parsedIP.fromString(ip);
 }
 
 /**
