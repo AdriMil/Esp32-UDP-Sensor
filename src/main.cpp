@@ -37,47 +37,6 @@ uint16_t udpPort ; // UDP Port number
 const int LED_PIN = 2;  // PCB led
 
 /**
- * @brief Check if a string can be converted to Int
- * 
- * @param str 
- * @return true 
- * @return false 
- */
- bool isInteger(const String& str) {
-  char* endptr;
-  strtol(str.c_str(), &endptr, 10);
-  return *endptr == '\0';
-}
-
-/**
- * @brief Check if a string can be converted to Float
- * 
- * @param str 
- * @return true 
- * @return false 
- */
-bool isFloat(const String& str) {
-  char* endptr;
-  strtod(str.c_str(), &endptr);
-  return *endptr == '\0';
-}
-
-/**
- * @brief Check if a string has IP adress patter
- * 
- * @param ip 
- * @return true 
- * @return false 
- * @note true: 192.168.1.1, 255.255.255.255
- * @note false: 300.168.1.1, abc.def.ghi.jkl, 192.168.1
- * 
- */
-bool isValidIPAddress(const String& ip) {
-  IPAddress parsedIP;
-  return parsedIP.fromString(ip);
-}
-
-/**
  * @brief Will switch on and off the led
  * @note Defined the blinking during 1s.
  */
