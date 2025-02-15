@@ -25,8 +25,11 @@ const int udpPort = 5000 ; // UDP Port number // TO REMOVE LATER -> Will be sele
 WiFiUDP udp;
 
 unsigned long time_save; //Variable used to store current time
+
+// Sleep frequency data:
 uint64_t time_to_sleep; //Sleep time
 const uint64_t default_time_sleep = 60ULL; //DefaultSleep time
+const char* key_udp_msg_frequency = "udpMsgFreq"; //Preference key name
 
 const int LED_PIN = 2;  // PCB led
 
@@ -138,8 +141,20 @@ void onWakeUp(){
  * @return false 
  * @note If the key does not exist, preferences.getString("ssid", "") return ""
  */
-bool preferenceKeyExist(Preferences& preferences, String keyToCheck){
-  return !preferences.getString("ssid", "").isEmpty();
+bool preferenceKeyExist(Preferences& preferences, const char* keyToCheck){
+  return !preferences.getString(keyToCheck, "").isEmpty();
+}
+
+/**
+ * @brief Check if keyToCheck has a values in preferences memory check if it is not default one (means values did not exist)
+ * 
+ * @param preferences 
+ * @param keyToCheck 
+ * @return true 
+ * @return false 
+ */
+bool preferenceUint64_KeyExist(Preferences& preferences, const char* keyToCheck) {
+  return preferences.getULong64(keyToCheck) != 0ULL;
 }
 
 /**
@@ -202,22 +217,11 @@ void setup() {
   if(wifi_state == 200 ){ //Connection wifi is working well -> Start DeepSleep cycle
     LOG_TRACE("WifiState equal to 200");
 
-    if(preferenceKeyExist(preferences, "udpMsgFreq")){ 
-      LOG_INFO("Udp message frequency found exist in preference");
-      LOG_INFO("udpMsgFreq value: ");
-      LOG_INFO(preferences.getInt("udpMsgFreq"));
-      int udpMsgFreq = (preferences.getInt("udpMsgFreq",default_time_sleep));
-
-      if (isInteger(preferences.getString("udpMsgFreq"))){
-        LOG_INFO("udpMsgFreq can be Int and is not a float");
-        // time_to_sleep = static_cast<uint64_t>(udpMsgFreq);
-        time_to_sleep = default_time_sleep ;
-      } else{
-        LOG_INFO("udpMsgFreq cannot be converted to Int");
-        time_to_sleep = default_time_sleep ;
-      }
+    if(preferenceUint64_KeyExist(preferences, key_udp_msg_frequency)){ 
+      LOG_INFO("udpMsgFreq found and is not default values");
+      time_to_sleep = preferences.getULong64(key_udp_msg_frequency, default_time_sleep);
     } else{
-      LOG_INFO("udpMsgFreq does not exist in preference - use default time sleep");
+      LOG_INFO("udpMsgFreq does not exist or his default is 0 - use default time sleep");
       time_to_sleep = default_time_sleep ;
     }
 
