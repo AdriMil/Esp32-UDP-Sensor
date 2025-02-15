@@ -1,20 +1,19 @@
 #include <Arduino.h>
 #include <LittleFS.h>
 #include <DebugLog.h>
-#include <Preferences.h>
 #include <WiFiUdp.h>
 #include <ESPAsyncWebServer.h>
 #include "Sensors/AHT10/AHT10.h"
 #include "Wifi/CheckWifiConnection.h"
 #include "Wifi/SetUpAccessPoint.h"
 #include "Miscellaneous/TypeModification.h"
+#include "Miscellaneous/MyPreferences.h"
 #include <IPAddress.h>
 
 #define s_TO_us_FACTOR 1000000  //convert seconds to microseconds
 #define WAKEUP_PIN  GPIO_NUM_33 // Pin used for wake-up esp32 from DeepSleep
 #define RESET_PIN  GPIO_NUM_34 // Pin used for wake-up esp32 from DeepSleep
 
-Preferences preferences;
 AsyncWebServer server(80);   // Create asynchrone web server
 
 const char* ssid_ap = "ESP32";  // Network name in AccessPoint mod
@@ -137,43 +136,6 @@ void onWakeUp(){
 }
 
 /**
- * @brief Check if ssid exist in preference memory
- * 
- * @param preferences 
- * @param keyToCheck 
- * @return true 
- * @return false 
- * @note If the key does not exist, preferences.getString("ssid", "") return ""
- */
-bool preferenceKeyExist(Preferences& preferences, const char* keyToCheck){
-  return !preferences.getString(keyToCheck, "").isEmpty();
-}
-
-/**
- * @brief Check if keyToCheck has a values in preferences memory check if it is not default one (means values did not exist)
- * 
- * @param preferences 
- * @param keyToCheck 
- * @return true 
- * @return false 
- */
-bool preferenceUint64_KeyExist(Preferences& preferences, const char* keyToCheck) {
-  return preferences.getULong64(keyToCheck) != 0ULL;
-}
-
-/**
- * @brief Check if keyToCheck has a values in preferences memory check if it is not default one (means values did not exist)
- * 
- * @param preferences 
- * @param keyToCheck 
- * @return true 
- * @return false 
- */
-bool preferenceIntKeyExist(Preferences& preferences, const char* keyToCheck) {
-  return preferences.getInt(keyToCheck) != 0;
-}
-
-/**
  * @brief Check if the esp32 wake up by using a WakeUp button
  * 
  * @return true 
@@ -201,15 +163,6 @@ void deepSleep(){
   LOG_INFO("ESP32 Will sleep in 1 seconds...");
   delay(1000);
   esp_deep_sleep_start();
-}
-
-/**
- * @brief Clear preference memory and restart esp32
- * 
- */
-void resetPreference(){
-  preferences.clear();
-  ESP.restart();
 }
 
 void setup() {
@@ -267,7 +220,7 @@ void setup() {
         if (digitalRead(RESET_PIN) == LOW){  //If there a click on the reset button during this while period
           delay(500);
           LOG_INFO("Reset Button pressed during while loop");
-          resetPreference();
+          resetPreference(preferences);
         }
       }
     }
