@@ -7,6 +7,7 @@
 #include "Sensors/AHT10/AHT10.h"
 #include "Wifi/CheckWifiConnection.h"
 #include "Wifi/SetUpAccessPoint.h"
+#include "Miscellaneous/TypeModification.h"
 #include <IPAddress.h>
 
 #define s_TO_us_FACTOR 1000000  //convert seconds to microseconds
@@ -21,15 +22,18 @@ const char* ssid_ap = "ESP32";  // Network name in AccessPoint mod
 const char* password_ap = "123456789"; // Password name in AccessPoint mod.
 
 const char* udpAddress = "10.0.0.5"; // Target Ip adress // TO REMOVE LATER -> Will be selected within UI
-const int udpPort = 5000 ; // UDP Port number // TO REMOVE LATER -> Will be selected within UI
 WiFiUDP udp;
 
 unsigned long time_save; //Variable used to store current time
 
 // Sleep frequency data:
 uint64_t time_to_sleep; //Sleep time
-const uint64_t default_time_sleep = 60ULL; //DefaultSleep time
+const uint64_t default_time_sleep = 60ULL; //Default sleep time
 const char* key_udp_msg_frequency = "udpMsgFreq"; //Preference key name
+
+const char* key_udp_port = "udpPort"; //Preference key name
+const uint16_t default_udp_port = 5000; //Default upd port
+uint16_t udpPort ; // UDP Port number
 
 const int LED_PIN = 2;  // PCB led
 
@@ -158,6 +162,18 @@ bool preferenceUint64_KeyExist(Preferences& preferences, const char* keyToCheck)
 }
 
 /**
+ * @brief Check if keyToCheck has a values in preferences memory check if it is not default one (means values did not exist)
+ * 
+ * @param preferences 
+ * @param keyToCheck 
+ * @return true 
+ * @return false 
+ */
+bool preferenceIntKeyExist(Preferences& preferences, const char* keyToCheck) {
+  return preferences.getInt(keyToCheck) != 0;
+}
+
+/**
  * @brief Check if the esp32 wake up by using a WakeUp button
  * 
  * @return true 
@@ -216,6 +232,14 @@ void setup() {
    */
   if(wifi_state == 200 ){ //Connection wifi is working well -> Start DeepSleep cycle
     LOG_TRACE("WifiState equal to 200");
+
+    if(preferenceIntKeyExist(preferences, key_udp_port)){
+      LOG_INFO("udpPort found and is not default values");
+      udpPort = convertInt32ToUInt16(preferences.getInt(key_udp_port)); //Value converted from int_32 (preference answer format) to uint16 (udp port format)
+      LOG_INFO("udpPort value after convertion: %u",udpPort);
+    }else{
+      udpPort = default_udp_port;
+    }
 
     if(preferenceUint64_KeyExist(preferences, key_udp_msg_frequency)){ 
       LOG_INFO("udpMsgFreq found and is not default values");
