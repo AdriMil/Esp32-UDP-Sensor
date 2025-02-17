@@ -72,6 +72,30 @@ void onWakeUp(){
   ledBlinking();
 }
 
+/**
+ * @brief Init udp settings if first start
+ * 
+ * @param preferences 
+ */
+void initPreferences(Preferences& preferences){
+  preferences.begin("wifi", false);
+
+  if(!preferenceIntKeyExist(preferences, key_udp_port)){
+    udpPort = default_udp_port;
+    preferences.putInt(key_udp_port, udpPort);
+  }
+
+  if(!preferenceUint64_KeyExist(preferences, key_udp_msg_frequency)){
+    time_to_sleep = default_time_sleep;
+    preferences.putULong64(key_udp_msg_frequency, time_to_sleep);
+  }
+
+  if(!preferenceStringKeyExist(preferences, key_udp_ip)){
+    udp_ip = default_udp_ip;
+    preferences.putString(key_udp_ip, udp_ip);
+  }
+}
+
 void setup() {
 
   Serial.begin(115200);
@@ -83,7 +107,7 @@ void setup() {
   digitalWrite(LED_PIN, LOW);
   getWakeupReason();
 
-  preferences.begin("wifi", false); //Start Notebook wifi where some data (inputSSID, inputPassword) will be store.
+  initPreferences(preferences);
   int wifi_state = wifiCheckup(preferences); //Check if wifi connection is possible
 
   /**
