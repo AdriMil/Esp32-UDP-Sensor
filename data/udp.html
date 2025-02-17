@@ -5,20 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="/dev/25/fe/clock.js" defer></script>
-    <title>Esp 32 - Wifi & UDP Manager</title>
+    <title>Configure UDP</title>
 </head>
 
-<body >
+<body onload="startClock()">
     <header>
-    </header>    
+        <div id="clock">00/00/0000 00:00:00</div>
+        <button onclick="location.href='/'" class="icon-button">
+            <svg viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </button>
+    </header>     
     <div class="form-container">
-        <h2>Wifi and UDP configuration</h2>
-        <form action='/setwifi' method='post'>
-            <label for="ssid">SSID :</label>
-            <input type="text" id="ssid" name="ssid" placeholder="Enter wifi name" required>
-
-            <label for="password">Password :</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        <h2>UDP configuration</h2>
+        <form action='/setupudp' method='post'>
+            <label for="ip-adress">Target IP Address :</label>
+            <input type="text" id="ip-adress" name="ip-adress" 
+            pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" 
+            title="Entrez une adresse IPv4 valide (ex: 192.168.0.255)" required>
 
             <label for="udp-port">UDP Port :</label>
             <input type="number" id="udp-port" name="udp-port" min="5000" max="65535" value="5000" required>
@@ -29,7 +34,7 @@
             <button type="submit">Send</button>
         </form>
         <div class="buttons">
-            <button onclick="location.href='index.html'">Back</button>
+            <button onclick="location.href='/'">Back</button>
         </div>
     </div>
 </body>

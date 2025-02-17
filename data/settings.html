@@ -8,9 +8,15 @@
     <title>Parameters</title>
 </head>
 
-<body>
+<body onload="startClock()">
     <header>
-    </header>    
+        <div id="clock">00/00/0000 00:00:00</div>
+        <button onclick="location.href='/'" class="icon-button">
+            <svg viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </button>
+    </header>     
     <div class="form-container">
         <h2>Parameters</h2>
         <script>
