@@ -18,8 +18,8 @@ extern const char* key_udp_port;
 extern const uint16_t default_udp_port;
 extern uint16_t udpPort;
 
-extern const char* key_udp_ip;
-extern const String default_udp_ip;
-extern String udp_ip;
+extern const char* key_udp_target_ip;
+extern const String default_udp_target_ip;
+extern String udp_target_ip;
 
 #endif

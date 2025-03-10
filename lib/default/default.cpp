@@ -16,6 +16,6 @@ const char* key_udp_port = "udpPort"; //Preference key name
 const uint16_t default_udp_port = 5000; //Default upd port
 uint16_t udpPort ; // UDP Port number
 
-const char* key_udp_ip = "udpIpAddress"; //Preference key name
-const String default_udp_ip = "192.168.1.255"; //Default Ip address
-String udp_ip;
+const char* key_udp_target_ip = "udpTargetIp"; //Preference key name
+const String default_udp_target_ip = "192.168.1.255"; //Default Ip address
+String udp_target_ip;
