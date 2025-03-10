@@ -1,38 +1,24 @@
 #include <Arduino.h>
 #include <LittleFS.h>
 #include <DebugLog.h>
-#include <WiFiUdp.h>
 #include <ESPAsyncWebServer.h>
+#include <IPAddress.h>
 #include "Sensors/AHT10/AHT10.h"
 #include "Wifi/CheckWifiConnection.h"
 #include "Wifi/SetUpAccessPoint.h"
 #include "Miscellaneous/TypeModification.h"
 #include "Miscellaneous/MyPreferences.h"
 #include "Miscellaneous/MyDeepSleep.h"
-#include <IPAddress.h>
+#include "UDP/MyUdp.h"
+#include "default.h"
 
 #define WAKEUP_PIN  GPIO_NUM_33 // Pin used for wake-up esp32 from DeepSleep
 #define RESET_PIN  GPIO_NUM_34 // Pin used for wake-up esp32 from DeepSleep
 
 AsyncWebServer server(80);   // Create asynchrone web server
 
-const char* ssid_ap = "ESP32";  // Network name in AccessPoint mod
-//if password app lower than 8 digit, Access point won't be secured by password.
-const char* password_ap = "123456789"; // Password name in AccessPoint mod.
-
-const char* udpAddress = "10.0.0.5"; // Target Ip adress // TO REMOVE LATER -> Will be selected within UI
-WiFiUDP udp;
-
 unsigned long time_save; //Variable used to store current time
 
-// Sleep frequency data:
-uint64_t time_to_sleep; //Sleep time
-const uint64_t default_time_sleep = 60ULL; //Default sleep time
-const char* key_udp_msg_frequency = "udpMsgFreq"; //Preference key name
-
-const char* key_udp_port = "udpPort"; //Preference key name
-const uint16_t default_udp_port = 5000; //Default upd port
-uint16_t udpPort ; // UDP Port number
 
 const int LED_PIN = 2;  // PCB led
 
@@ -50,26 +36,39 @@ void ledBlinking(){
 }
 
 /**
- * @brief Generate UDP message and send it
- * 
- */
-void udpMessage(){
-  String message = "T: " + String(temp.temperature) + " C, H: " + String(humidity.relative_humidity) + " %";
-  udp.beginPacket(udpAddress, udpPort);
-  udp.print(message);
-  udp.endPacket();
-  LOG_INFO("Message sent: " + message);
-}
-
-/**
  * @brief Call functions to blink led, get T° and H values, send UDP message and blink led again
  * 
  */
 void onWakeUp(){
   ledBlinking();
   readAHT10Values();
-  udpMessage();
+  String message = "T: " + String(temp.temperature) + " C, H: " + String(humidity.relative_humidity) + " %";
+  udpMessage(message, udpAddress, udpPort);
   ledBlinking();
+}
+
+/**
+ * @brief Init udp settings if first start
+ * 
+ * @param preferences 
+ */
+void initPreferences(Preferences& preferences){
+  preferences.begin("wifi", false);
+
+  if(!preferenceIntKeyExist(preferences, key_udp_port)){
+    udpPort = default_udp_port;
+    preferences.putInt(key_udp_port, udpPort);
+  }
+
+  if(!preferenceUint64_KeyExist(preferences, key_udp_msg_frequency)){
+    time_to_sleep = default_time_sleep;
+    preferences.putULong64(key_udp_msg_frequency, time_to_sleep);
+  }
+
+  if(!preferenceStringKeyExist(preferences, key_udp_target_ip)){
+    udp_target_ip = default_udp_target_ip;
+    preferences.putString(key_udp_target_ip, udp_target_ip);
+  }
 }
 
 void setup() {
@@ -83,7 +82,7 @@ void setup() {
   digitalWrite(LED_PIN, LOW);
   getWakeupReason();
 
-  preferences.begin("wifi", false); //Start Notebook wifi where some data (inputSSID, inputPassword) will be store.
+  initPreferences(preferences);
   int wifi_state = wifiCheckup(preferences); //Check if wifi connection is possible
 
   /**
