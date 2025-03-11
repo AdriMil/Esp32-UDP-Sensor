@@ -5,12 +5,12 @@
 #include <IPAddress.h>
 #include "Sensors/AHT10/AHT10.h"
 #include "Wifi/CheckWifiConnection.h"
-#include "Wifi/SetUpAccessPoint.h"
 #include "Miscellaneous/TypeModification.h"
 #include "Miscellaneous/MyPreferences.h"
 #include "Miscellaneous/MyDeepSleep.h"
 #include "UDP/MyUdp.h"
 #include "default.h"
+#include "SetUpAccessPoint.h"
 
 #define WAKEUP_PIN  GPIO_NUM_33 // Pin used for wake-up esp32 from DeepSleep
 #define RESET_PIN  GPIO_NUM_34 // Pin used for wake-up esp32 from DeepSleep
@@ -142,7 +142,7 @@ void setup() {
     LOG_INFO("LittleFS monté avec succès.");
 
   // If no existing wifi credentials or wifi cannot connect
-  setupAccessPointV2(preferences, server, ssid_ap, password_ap);
+  setupAccessPoint(preferences, server, ssid_ap, password_ap);
   server.begin();
 }
 
