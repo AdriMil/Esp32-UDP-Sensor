@@ -1,6 +1,9 @@
 
 #include "SetUpAccessPoint.h"
 
+unsigned long routeAccessTime = 0;
+bool accessPointOn = false;
+
  /**
   * @brief Create an access point with my accessible routes
   * 
@@ -12,23 +15,29 @@
 void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const char* ssid_ap, const char* password_ap) {
 
   WiFi.softAP(ssid_ap, password_ap);
+  accessPointOn = true;
+  routeAccessTime = getTime();
   LOG_INFO("Access Point started. You can connect to network: " + String(ssid_ap));
   LOG_INFO("Access Point started. Web Interface  IP : ");
   LOG_INFO(WiFi.softAPIP());  
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    routeAccessTime = getTime();
     request->send(LittleFS, "/index.html", "text/html");
     });
     
   server.on("/wifi.html", HTTP_GET, [](AsyncWebServerRequest *request) {
+    routeAccessTime = getTime();
     request->send(LittleFS, "/wifi.html", "text/html");
     });
 
   server.on("/settings.html", HTTP_GET, [](AsyncWebServerRequest *request) {
+    routeAccessTime = getTime();
       request->send(LittleFS, "/settings.html", "text/html");
     });
 
   server.on("/restart.html", HTTP_GET, [](AsyncWebServerRequest *request) {
+      routeAccessTime = getTime();
       request->send(LittleFS, "/restart.html", "text/html");
     });
 
@@ -37,6 +46,7 @@ void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const ch
     });
 
   server.on("/404.html", HTTP_GET, [](AsyncWebServerRequest *request) {
+    routeAccessTime = getTime();
     request->send(LittleFS, "/404.html", "text/html");
     });
 
@@ -45,6 +55,8 @@ void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const ch
     });
   
   server.on("/reset-memory", HTTP_POST, [&preferences](AsyncWebServerRequest *request) {
+    routeAccessTime = getTime();
+    resetErrorWifi(preferences);
     LOG_TRACE("In server.on /reset-memory");
     resetPreference(preferences);
     request->redirect("/");
@@ -53,6 +65,7 @@ void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const ch
   // Send values using POST request
   server.on("/setwifi", HTTP_POST, [&preferences](AsyncWebServerRequest *request) {
     LOG_TRACE("In server.on /setwifi");
+    routeAccessTime = getTime();
       
   if (request->hasParam("ssid", true) && request->hasParam("password", true) && request->hasParam("udp-port", true) && request->hasParam("msg-frequency", true) && request->hasParam("udp-target-ip", true)) {
       LOG_TRACE("wifi ssid, wifi password, udp port and udp message frequency are existing");
@@ -78,6 +91,7 @@ void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const ch
           
           //Redirect page
           LOG_TRACE("Before redirecting");
+          resetErrorWifi(preferences);
           delay(1000);
           ESP.restart();
       } else {
