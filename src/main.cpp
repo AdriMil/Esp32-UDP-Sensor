@@ -18,8 +18,6 @@
 AsyncWebServer server(80);   // Create asynchrone web server
 
 unsigned long time_save; //Variable used to store current time
-
-
 const int LED_PIN = 2;  // PCB led
 
 /**
@@ -80,9 +78,19 @@ void setup() {
   pinMode(WAKEUP_PIN, INPUT);
   pinMode(RESET_PIN, INPUT);
   digitalWrite(LED_PIN, LOW);
-  getWakeupReason();
 
   initPreferences(preferences);
+
+  //Check if case error wifi + manual reset buttun
+  esp_sleep_wakeup_cause_t wakeupReason = getWakeupReason();
+  int errorWifiCode = getErrorWifi(preferences);
+
+  if ((errorWifiCode > 0) && (wakeupReason == ESP_SLEEP_WAKEUP_EXT0))
+  {
+    LOG_INFO("error wifi + manual reset buttun");
+    resetErrorWifi(preferences);
+  }
+
   int wifi_state = wifiCheckup(preferences); //Check if wifi connection is possible
 
   /**
@@ -133,19 +141,32 @@ void setup() {
     onWakeUp();
     deepSleep(time_to_sleep, WAKEUP_PIN);
 }
+  errorWifiCode = getErrorWifi(preferences);
+  calculedTime = setNextWackUp(errorWifiCode);
 
-  // Init LittleFS
-  if (!LittleFS.begin()) {
-    LOG_ERROR("Erreur LittleFS...");
-    return;
+  if(errorWifiCode == 1){
+      // Init LittleFS
+      if (!LittleFS.begin()) {
+        LOG_ERROR("Erreur LittleFS...");
+        return;
+      }
+        LOG_INFO("LittleFS monté avec succès.");
+    
+      // If no existing wifi credentials or wifi cannot connect
+      setupAccessPoint(preferences, server, ssid_ap, password_ap);
+      server.begin();
   }
-    LOG_INFO("LittleFS monté avec succès.");
-
-  // If no existing wifi credentials or wifi cannot connect
-  setupAccessPoint(preferences, server, ssid_ap, password_ap);
-  server.begin();
+  if(errorWifiCode > 1){
+    deepSleep(calculedTime, RESET_PIN);
+  }
 }
 
 void loop() {
-
+  if (accessPointOn) {
+    LOG_INFO("Access point activated, will check if AP not using since 10 minutes");
+    if (timeDifference(routeAccessTime) > 600000){
+      LOG_INFO("Access point inactive since 10 mins, go to sleep");
+      deepSleep(calculedTime, RESET_PIN);
+    }
+  }
 }
