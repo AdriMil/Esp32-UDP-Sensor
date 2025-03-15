@@ -164,6 +164,7 @@ void setup() {
 void loop() {
   if (accessPointOn) {
     LOG_INFO("Access point activated, will check if AP not using since 10 minutes");
+    delay(10000);
     if (timeDifference(routeAccessTime) > 600000){
       LOG_INFO("Access point inactive since 10 mins, go to sleep");
       deepSleep(calculedTime, RESET_PIN);
