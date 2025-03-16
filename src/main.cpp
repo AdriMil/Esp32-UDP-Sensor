@@ -9,7 +9,7 @@
 #include "Miscellaneous/MyPreferences.h"
 #include "Miscellaneous/MyDeepSleep.h"
 #include "UDP/MyUdp.h"
-#include "default.h"
+#include "default/default.h"
 #include "SetUpAccessPoint.h"
 
 #define WAKEUP_PIN  GPIO_NUM_33  // Pin used for wake-up esp32 from DeepSleep
@@ -100,7 +100,8 @@ void setup() {
 
     if (preferenceIntKeyExist(preferences, key_udp_port)) {
       LOG_INFO("udpPort found and is not default values");
-      udpPort = convertInt32ToUInt16(preferences.getInt(key_udp_port));  // Value converted from int_32 (preference answer format) to uint16 (udp port format)
+      // Value converted from int_32 (preference answer format) to uint16 (udp port format):
+      udpPort = convertInt32ToUInt16(preferences.getInt(key_udp_port));
       LOG_INFO("udpPort value after convertion: %d", udpPort);
     } else {
       udpPort = default_udp_port;

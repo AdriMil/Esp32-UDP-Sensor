@@ -13,19 +13,18 @@ bool accessPointOn = false;
   * @param password_ap 
   */
 void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const char* ssid_ap, const char* password_ap) {
-
   WiFi.softAP(ssid_ap, password_ap);
   accessPointOn = true;
   routeAccessTime = getTime();
   LOG_INFO("Access Point started. You can connect to network: " + String(ssid_ap));
   LOG_INFO("Access Point started. Web Interface  IP : ");
-  LOG_INFO(WiFi.softAPIP());  
+  LOG_INFO(WiFi.softAPIP());
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     routeAccessTime = getTime();
     request->send(LittleFS, "/index.html", "text/html");
     });
-    
+
   server.on("/wifi.html", HTTP_GET, [](AsyncWebServerRequest *request) {
     routeAccessTime = getTime();
     request->send(LittleFS, "/wifi.html", "text/html");
@@ -53,7 +52,7 @@ void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const ch
   server.on("/dev/25/fe/clock.js", HTTP_GET, [](AsyncWebServerRequest *request) {
       request->send(LittleFS, "/clock.js", "text/javascript");
     });
-  
+
   server.on("/reset-memory", HTTP_POST, [&preferences](AsyncWebServerRequest *request) {
     routeAccessTime = getTime();
     resetErrorWifi(preferences);
@@ -66,11 +65,15 @@ void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const ch
   server.on("/setwifi", HTTP_POST, [&preferences](AsyncWebServerRequest *request) {
     LOG_TRACE("In server.on /setwifi");
     routeAccessTime = getTime();
-      
-  if (request->hasParam("ssid", true) && request->hasParam("password", true) && request->hasParam("udp-port", true) && request->hasParam("msg-frequency", true) && request->hasParam("udp-target-ip", true)) {
+
+  if (request->hasParam("ssid", true) &&
+      request->hasParam("password", true) &&
+      request->hasParam("udp-port", true) &&
+      request->hasParam("msg-frequency", true) &&
+      request->hasParam("udp-target-ip", true)) {
       LOG_TRACE("wifi ssid, wifi password, udp port and udp message frequency are existing");
-      
-      //Extract ssid and password parameters from http request and store it in pointers ssidParam and passwordParam
+
+      // Extract ssid and password parameters from http request and store it in pointers ssidParam and passwordParam
       const AsyncWebParameter* ssidParam = request->getParam("ssid", true);
       const AsyncWebParameter* passwordParam = request->getParam("password", true);
       const AsyncWebParameter* udpPortParam = request->getParam("udp-port", true);
@@ -78,9 +81,12 @@ void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const ch
       const AsyncWebParameter* udpTargetIpParam = request->getParam("udp-target-ip", true);
 
       LOG_TRACE("Wifi settings extracted from http request: " + ssidParam->value() + " and " + passwordParam->value());
-      LOG_TRACE("UDP setting extracted from http request: " + udpPortParam->value() + " and " + udpMsgFreqParam->value() + " and " + udpTargetIpParam->value());
+      LOG_TRACE("UDP setting extracted from http request: " + udpPortParam->value() +
+                " and " + udpMsgFreqParam->value() + " and " + udpTargetIpParam->value());
 
-      if (ssidParam != nullptr && passwordParam != nullptr && udpPortParam != nullptr && udpMsgFreqParam != nullptr && udpTargetIpParam != nullptr) {
+      if (ssidParam != nullptr && passwordParam != nullptr &&
+          udpPortParam != nullptr && udpMsgFreqParam != nullptr
+          && udpTargetIpParam != nullptr) {
           // Save data in Preferences wifi notebook by keys ssid ans password
           LOG_TRACE("ssid and password are saved in non volatile memory");
           preferences.putString("ssid", ssidParam->value());
@@ -88,8 +94,8 @@ void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const ch
           preferences.putInt("udpPort", static_cast<int32_t>(udpPortParam->value().toInt()));
           preferences.putULong64("udpMsgFreq",  static_cast<uint64_t>(udpMsgFreqParam->value().toInt()));
           preferences.putString("udpTargetIp", udpTargetIpParam->value());
-          
-          //Redirect page
+
+          // Redirect page
           LOG_TRACE("Before redirecting");
           resetErrorWifi(preferences);
           delay(1000);
@@ -107,5 +113,4 @@ void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const ch
   server.onNotFound([](AsyncWebServerRequest *request) {
     request->send(LittleFS, "/404.html", "text/html");
   });
-
 }
