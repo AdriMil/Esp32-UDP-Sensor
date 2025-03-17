@@ -41,7 +41,7 @@ void onWakeUp() {
   ledBlinking();
   readAHT10Values();
   String message = "ID: " + preferences.getString("deviceId", "404") + " T: " + String(temp.temperature) + " C, H: " + String(humidity.relative_humidity) + " %";
-  udpMessage(message, udpAddress, udpPort);
+  udpMessage(message, udp_target_ip.c_str(), udpPort);
   ledBlinking();
 }
 

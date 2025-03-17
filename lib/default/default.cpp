@@ -5,8 +5,6 @@ const char* ssid_ap = "ESP32";  // Network name in AccessPoint mod
 // if password app lower than 8 digit, Access point won't be secured by password.
 const char* password_ap = "123456789";  // Password name in AccessPoint mod.
 
-const char* udpAddress = "10.0.0.5";  // Target Ip adress // TO REMOVE LATER -> Will be selected within UI
-
 // Sleep frequency data:
 const char* key_udp_msg_frequency = "udpMsgFreq";  // Preference key name
 const uint64_t default_time_sleep = 60ULL;  // Default sleep time

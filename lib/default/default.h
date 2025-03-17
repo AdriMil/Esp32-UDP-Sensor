@@ -7,8 +7,6 @@
 extern const char* ssid_ap;
 extern const char* password_ap;
 
-extern const char* udpAddress;
-
 // Sleep frequency data:
 extern const char* key_udp_msg_frequency;
 extern const uint64_t default_time_sleep;
