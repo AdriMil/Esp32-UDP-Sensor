@@ -66,29 +66,34 @@ void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const ch
     LOG_TRACE("In server.on /setwifi");
     routeAccessTime = getTime();
 
-  if (request->hasParam("ssid", true) &&
+  if (request->hasParam("device-id", true) &&
+      request->hasParam("ssid", true) &&
       request->hasParam("password", true) &&
       request->hasParam("udp-port", true) &&
       request->hasParam("msg-frequency", true) &&
       request->hasParam("udp-target-ip", true)) {
-      LOG_TRACE("wifi ssid, wifi password, udp port and udp message frequency are existing");
+      LOG_TRACE("device-id, wifi ssid, wifi password, udp port and udp message frequency are existing");
 
       // Extract ssid and password parameters from http request and store it in pointers ssidParam and passwordParam
+      const AsyncWebParameter* deviceIdParam = request->getParam("device-id", true);
       const AsyncWebParameter* ssidParam = request->getParam("ssid", true);
       const AsyncWebParameter* passwordParam = request->getParam("password", true);
       const AsyncWebParameter* udpPortParam = request->getParam("udp-port", true);
       const AsyncWebParameter* udpMsgFreqParam = request->getParam("msg-frequency", true);
       const AsyncWebParameter* udpTargetIpParam = request->getParam("udp-target-ip", true);
-
+      
+      LOG_TRACE("Device ID: " + deviceIdParam->value());
       LOG_TRACE("Wifi settings extracted from http request: " + ssidParam->value() + " and " + passwordParam->value());
       LOG_TRACE("UDP setting extracted from http request: " + udpPortParam->value() +
                 " and " + udpMsgFreqParam->value() + " and " + udpTargetIpParam->value());
 
-      if (ssidParam != nullptr && passwordParam != nullptr &&
-          udpPortParam != nullptr && udpMsgFreqParam != nullptr
-          && udpTargetIpParam != nullptr) {
+      if (deviceIdParam != nullptr && ssidParam != nullptr &&
+          passwordParam != nullptr && udpPortParam != nullptr &&
+          udpMsgFreqParam != nullptr && udpTargetIpParam != nullptr) {
+
           // Save data in Preferences wifi notebook by keys ssid ans password
-          LOG_TRACE("ssid and password are saved in non volatile memory");
+          LOG_TRACE("parameters are saved in non volatile memory");
+          preferences.putString("deviceId", deviceIdParam->value());
           preferences.putString("ssid", ssidParam->value());
           preferences.putString("password", passwordParam->value());
           preferences.putInt("udpPort", static_cast<int32_t>(udpPortParam->value().toInt()));
