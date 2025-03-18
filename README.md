@@ -7,19 +7,19 @@ This repository provides the code to create an UDP Temperature and Humidity sens
 Wifi and UDP parameters (ssid, password, target IP, port and measurments frequency) are configurable through a web interface.
 </p>
 
-## Motivations
+## Motivation
 
 <p align="justify">
 The aim is to create a cheap sensor that can send T° and H% data via UDP within a local network. Then, by using a domotic server, I will be able to read these values and use them through a domotic interface. So there is no stored data, no permanent web interface and no API.
 The domotic server can see when a UDP packet is sent on a given port.
 </p>
 
-<figure style="text-align: center;">
-    <img src="docs/NetworkDiagram.png" width="300" alt="Network diagram">
-    <figcaption style="font-weight: bold; text-decoration: underline;">
-        Network diagram
-    </figcaption>
-</figure>
+<p align="center">
+<img src="docs/NetworkDiagram.png" width="300"/>
+</p>
+<p align="center">
+  <b><u>Network diagram</u></b>
+</p>
 
 ### Constraints
 <p align="justify">
@@ -39,12 +39,12 @@ If the sensors wake up while there is a wifi failure, it will start a power savi
 - 2x 10k Ohms resistors
 
 ### Wiring 
-<figure style="text-align: center;">
-    <img src="docs/Wiring.png" width="500" alt="Wiring diagram">
-    <figcaption style="font-weight: bold; text-decoration: underline;">
-        Wiring diagram
-    </figcaption>
-</figure>
+<p align="center">
+<img src="docs/Wiring.png" width=450/>
+</p>
+<p align="center">
+  <b><u>Wiring diagram</u></b>
+</p>
 
 ### Comments
 
@@ -58,9 +58,9 @@ A [pull up wiring](https://learn.sparkfun.com/tutorials/pull-up-resistors/all) i
 
 ### Functional diagram
 
-<figure style="text-align: center;">
-    <img src="docs/FunctionalDiagram.png" alt="Functional diagram">
-    <figcaption style="font-weight: bold; text-decoration: underline;">
-        Functional diagram
-    </figcaption>
-</figure>
+<p align="center">
+<img src="docs/FunctionalDiagram.png"/>
+</p>
+<p align="center">
+  <b><u>Functional diagram</u></b>
+</p>
