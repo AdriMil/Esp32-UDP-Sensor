@@ -7,17 +7,19 @@ This repository provides the code to create an UDP Temperature and Humidity sens
 Wifi and UDP parameters (ssid, password, target IP, port and measurments frequency) are configurable through a web interface.
 </p>
 
-## Motivation
+## Motivations
 
 <p align="justify">
 The aim is to create a cheap sensor that can send T° and H% data via UDP within a local network. Then, by using a domotic server, I will be able to read these values and use them through a domotic interface. So there is no stored data, no permanent web interface and no API.
 The domotic server can see when a UDP packet is sent on a given port.
 </p>
 
-<p align="center">
-<img src="docs/NetworkDiagram.png" width="300"/>
-</p>
-</p>
+<figure style="text-align: center;">
+    <img src="docs/NetworkDiagram.png" width="300" alt="Network diagram">
+    <figcaption style="font-weight: bold; text-decoration: underline;">
+        Network diagram
+    </figcaption>
+</figure>
 
 ### Constraints
 <p align="justify">
@@ -37,9 +39,12 @@ If the sensors wake up while there is a wifi failure, it will start a power savi
 - 2x 10k Ohms resistors
 
 ### Wiring 
-<p align="center">
-<img src="docs/Wiring.png" width=450/>
-</p>
+<figure style="text-align: center;">
+    <img src="docs/Wiring.png" width="500" alt="Wiring diagram">
+    <figcaption style="font-weight: bold; text-decoration: underline;">
+        Wiring diagram
+    </figcaption>
+</figure>
 
 ### Comments
 
@@ -53,6 +58,9 @@ A [pull up wiring](https://learn.sparkfun.com/tutorials/pull-up-resistors/all) i
 
 ### Functional diagram
 
-<p align="center">
-<img src="docs/FunctionalDiagram.png"/>
-</p>
+<figure style="text-align: center;">
+    <img src="docs/FunctionalDiagram.png" alt="Functional diagram">
+    <figcaption style="font-weight: bold; text-decoration: underline;">
+        Functional diagram
+    </figcaption>
+</figure>
