@@ -11,6 +11,7 @@
 #include "UDP/MyUdp.h"
 #include "default/default.h"
 #include "SetUpAccessPoint.h"
+#include "LED/led.h"
 
 #define WAKEUP_PIN  GPIO_NUM_33  // Pin used for wake-up esp32 from DeepSleep
 #define RESET_PIN  GPIO_NUM_34  // Pin used for wake-up esp32 from DeepSleep
@@ -21,28 +22,15 @@ unsigned long time_save;  // Variable used to store current time
 const int LED_PIN = 2;  // PCB led
 
 /**
- * @brief Will switch on and off the led
- * @note Defined the blinking during 1s.
- */
-void ledBlinking() {
-  digitalWrite(LED_PIN, LOW);   // Switch off led
-  delay(100);
-  digitalWrite(LED_PIN, HIGH);  // Switch on led
-  delay(1000);
-  digitalWrite(LED_PIN, LOW);   // Switch off led
-  delay(500);
-}
-
-/**
  * @brief Call functions to blink led, get T° and H values, send UDP message and blink led again
  * 
  */
 void onWakeUp() {
-  ledBlinking();
+  ledBlinking(LED_PIN);
   readAHT10Values();
   String message = "ID: " + preferences.getString("deviceId", "404") + " T: " + String(temp.temperature) + " C, H: " + String(humidity.relative_humidity) + " %";
   udpMessage(message, udp_target_ip.c_str(), udpPort);
-  ledBlinking();
+  ledBlinking(LED_PIN);
 }
 
 /**
