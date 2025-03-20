@@ -15,7 +15,7 @@ The domotic server can see when a UDP packet is sent on a given port.
 </p>
 
 <p align="center">
-<img src="docs/NetworkDiagram.png" width="300"/>
+<img src="docs/Screenshots/NetworkDiagram.png" width="300"/>
 </p>
 <p align="center">
   <b><u>Network diagram</u></b>
@@ -40,7 +40,7 @@ If the sensors wake up while there is a wifi failure, it will start a power savi
 
 ### Wiring 
 <p align="center">
-<img src="docs/Wiring.png" width=450/>
+<img src="docs/Screenshots/Wiring.png" width=450/>
 </p>
 <p align="center">
   <b><u>Wiring diagram</u></b>
@@ -59,8 +59,10 @@ A [pull up wiring](https://learn.sparkfun.com/tutorials/pull-up-resistors/all) i
 ### Functional diagram
 
 <p align="center">
-<img src="docs/FunctionalDiagram.png"/>
+<img src="docs/Screenshots/FunctionalDiagram.png"/>
 </p>
 <p align="center">
   <b><u>Functional diagram</u></b>
 </p>
+
+Refer to [this documentation](docs/AccessPoint/README.md) to get more information on the Access Point mode. 
