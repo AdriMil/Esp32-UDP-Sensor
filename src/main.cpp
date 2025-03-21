@@ -9,9 +9,10 @@
 #include "Miscellaneous/MyPreferences.h"
 #include "Miscellaneous/MyDeepSleep.h"
 #include "UDP/MyUdp.h"
-#include "default/default.h"
+#include "default.h"
 #include "SetUpAccessPoint.h"
 #include "LED/led.h"
+#include "MyUtils.h"
 
 #define WAKEUP_PIN  GPIO_NUM_33  // Pin used for wake-up esp32 from DeepSleep
 #define RESET_PIN  GPIO_NUM_34  // Pin used for wake-up esp32 from DeepSleep
@@ -33,43 +34,6 @@ void onWakeUp() {
   ledBlinking(LED_PIN);
 }
 
-/**
- * @brief Init udp settings if first start
- * 
- * @param preferences 
- */
-void initPreferences(Preferences& preferences) {
-  preferences.begin("wifi", false);
-
-  if (!preferenceIntKeyExist(preferences, key_udp_port)) {
-    udpPort = default_udp_port;
-    preferences.putInt(key_udp_port, udpPort);
-  } else {
-    LOG_INFO("udpPort found and is not default values");
-    // Value converted from int_32 (preference answer format) to uint16 (udp port format):
-    udpPort = convertInt32ToUInt16(preferences.getInt(key_udp_port));
-    LOG_INFO("udpPort value after convertion: %d", udpPort);
-  }
-
-  if (!preferenceUint64_KeyExist(preferences, key_udp_msg_frequency)) {
-    LOG_INFO("udpMsgFreq does not exist or his default is 0 - use default time sleep");
-    time_to_sleep = default_time_sleep;
-    preferences.putULong64(key_udp_msg_frequency, time_to_sleep);
-  } else {
-    LOG_INFO("udpMsgFreq found and is not default values");
-    time_to_sleep = preferences.getULong64(key_udp_msg_frequency, default_time_sleep);
-  }
-
-  if (!preferenceStringKeyExist(preferences, key_udp_target_ip)) {
-    LOG_INFO("devideId does not exist or his default value is 192.168.1.255");
-    udp_target_ip = default_udp_target_ip;
-    preferences.putString(key_udp_target_ip, udp_target_ip);
-  } else {
-    LOG_INFO("devideId found and is not default values");
-    udp_target_ip = preferences.getString(key_udp_target_ip);
-  }
-}
-
 void setup() {
   Serial.begin(115200);
   delay(2000);  // To let system wake up
@@ -78,8 +42,11 @@ void setup() {
   pinMode(WAKEUP_PIN, INPUT);
   pinMode(RESET_PIN, INPUT);
   digitalWrite(LED_PIN, LOW);
+  preferences.begin("wifi", false);
 
-  initPreferences(preferences);
+  udpPort = isCustomUdpPort(preferences, udpPort, key_udp_port, default_udp_port);
+  time_to_sleep = isCustomTimeToSleep(preferences, time_to_sleep, key_udp_msg_frequency, default_time_sleep);
+  udp_target_ip = isCustomIpAdress(preferences, udp_target_ip, key_udp_target_ip, default_udp_target_ip);
 
   // Check if case error wifi + manual reset buttun
   esp_sleep_wakeup_cause_t wakeupReason = getWakeupReason();
