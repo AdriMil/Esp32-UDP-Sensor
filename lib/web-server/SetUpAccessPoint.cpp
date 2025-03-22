@@ -1,5 +1,6 @@
 
 #include "SetUpAccessPoint.h"
+#include "SecureData.h"
 
 unsigned long routeAccessTime = 0;
 bool accessPointOn = false;
@@ -87,10 +88,7 @@ void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const ch
       LOG_TRACE("UDP setting extracted from http request: " + udpPortParam->value() +
                 " and " + udpMsgFreqParam->value() + " and " + udpTargetIpParam->value());
 
-      if (deviceIdParam != nullptr && ssidParam != nullptr &&
-          passwordParam != nullptr && udpPortParam != nullptr &&
-          udpMsgFreqParam != nullptr && udpTargetIpParam != nullptr) {
-
+      if(secureIpAddress(request, udpTargetIpParam), secureStringData(request, ssidParam), secureStringData(request, passwordParam), secureIntData(request)) {
           // Save data in Preferences wifi notebook by keys ssid ans password
           LOG_TRACE("parameters are saved in non volatile memory");
           preferences.putString("deviceId", deviceIdParam->value());

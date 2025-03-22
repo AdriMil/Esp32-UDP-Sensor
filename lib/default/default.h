@@ -2,6 +2,7 @@
 #define LIB_DEFAULT_DEFAULT_H_
 
 #include <Arduino.h>
+#include <map>
 
 // WIFI INIT SETTINGS
 extern const char* ssid_ap;
@@ -19,5 +20,12 @@ extern uint16_t udpPort;
 extern const char* key_udp_target_ip;
 extern const String default_udp_target_ip;
 extern String udp_target_ip;
+
+struct ParamLimits {
+    int min;
+    int max;
+};
+
+extern std::map<String, ParamLimits> paramLimits;
 
 #endif  // LIB_DEFAULT_DEFAULT_H_

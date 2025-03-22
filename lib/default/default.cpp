@@ -17,3 +17,9 @@ uint16_t udpPort;  // UDP Port number
 const char* key_udp_target_ip = "udpTargetIp";  // Preference key name
 const String default_udp_target_ip = "192.168.1.255";  // Default Ip address
 String udp_target_ip;
+
+std::map<String, ParamLimits> paramLimits = {
+    {"udp-port", {5000, 65535}},
+    {"msg-frequency", {120, 18000}},
+    {"device-id", {1, 50}}
+};
