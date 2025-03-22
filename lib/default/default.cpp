@@ -18,6 +18,7 @@ const char* key_udp_target_ip = "udpTargetIp";  // Preference key name
 const String default_udp_target_ip = "192.168.1.255";  // Default Ip address
 String udp_target_ip;
 
+//Min and Max definied values for parameters to set connection from POST request
 std::map<String, ParamLimits> paramLimits = {
     {"udp-port", {5000, 65535}},
     {"msg-frequency", {120, 18000}},
