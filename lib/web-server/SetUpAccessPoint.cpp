@@ -82,13 +82,16 @@ void setupAccessPoint(Preferences& preferences, AsyncWebServer& server, const ch
       const AsyncWebParameter* udpPortParam = request->getParam("udp-port", true);
       const AsyncWebParameter* udpMsgFreqParam = request->getParam("msg-frequency", true);
       const AsyncWebParameter* udpTargetIpParam = request->getParam("udp-target-ip", true);
-      
+
       LOG_TRACE("Device ID: " + deviceIdParam->value());
       LOG_TRACE("Wifi settings extracted from http request: " + ssidParam->value() + " and " + passwordParam->value());
       LOG_TRACE("UDP setting extracted from http request: " + udpPortParam->value() +
                 " and " + udpMsgFreqParam->value() + " and " + udpTargetIpParam->value());
 
-      if(secureIpAddress(request, udpTargetIpParam), secureStringData(request, ssidParam), secureStringData(request, passwordParam), secureIntData(request)) {
+      if (secureIpAddress(request, udpTargetIpParam),
+        secureStringData(request, ssidParam),
+        secureStringData(request, passwordParam),
+        secureIntData(request)) {
           // Save data in Preferences wifi notebook by keys ssid ans password
           LOG_TRACE("parameters are saved in non volatile memory");
           preferences.putString("deviceId", deviceIdParam->value());
