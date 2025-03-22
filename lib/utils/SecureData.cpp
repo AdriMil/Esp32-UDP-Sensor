@@ -24,7 +24,7 @@ bool isValidNumber(String value) {
 bool isValidIP(String ip) {
     int segments = 0;
     int num = 0;
-    
+
     for (char c : ip) {
         if (c == '.') {
             if (num < 0 || num > 255) return false;
@@ -47,7 +47,7 @@ bool isValidIP(String ip) {
  * @return false 
  */
 bool isValidString(String value) {
-    if (value.length() < 1 || value.length() > 35){
+    if (value.length() < 1 || value.length() > 35) {
         return false;
     } else {
         return true;
@@ -90,10 +90,10 @@ bool secureIpAddress(AsyncWebServerRequest *request, const AsyncWebParameter* pa
  * @return false 
  */
 bool secureStringData(AsyncWebServerRequest *request, const AsyncWebParameter* parameterName) {
-    if(parameterName) {
+    if (parameterName) {
         LOG_TRACE("secureStringData - parameter found");
         String stringToCheck = parameterName->value();
-        if(!isValidString) {
+        if (!isValidString) {
             LOG_TRACE("secureStringData - parameter not valid");
             request->send(400, "text/plain", "Invalid String format (wifi ssid or password). Min: 1, Max: 35");
             return false;
