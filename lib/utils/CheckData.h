@@ -1,5 +1,5 @@
-#ifndef LIB_MY_UTILS_MYUTILS_H_
-#define LIB_MY_UTILS_MYUTILS_H_
+#ifndef LIB_UTILS_CHECKDATA_H_
+#define LIB_UTILS_CHECKDATA_H_
 
 #include "Miscellaneous/TypeModification.h"
 #include "Miscellaneous/MyPreferences.h"
@@ -12,4 +12,4 @@ uint64_t isCustomTimeToSleep(Preferences& preferences, uint64_t time_to_sleep,
 String isCustomIpAdress(Preferences& preferences, String udp_target_ip,
                             const char *key_udp_target_ip, const String default_udp_target_ip);
 
-#endif  // LIB_MY_UTILS_MYUTILS_H_
+#endif  // LIB_UTILS_CHECKDATA_H_
