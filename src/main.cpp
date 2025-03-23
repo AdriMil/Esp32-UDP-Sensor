@@ -15,12 +15,12 @@
 #include "CheckData.h"
 
 #define WAKEUP_PIN  GPIO_NUM_33  // Pin used for wake-up esp32 from DeepSleep
-#define RESET_PIN  GPIO_NUM_34  // Pin used for wake-up esp32 from DeepSleep
+#define RESET_PIN  GPIO_NUM_34  // Pin used for Reset functionnalities
 
 AsyncWebServer server(80);  // Create asynchrone web server
 
 unsigned long time_save;  // Variable used to store current time
-const int LED_PIN = 2;  // PCB led
+const int LED_PIN = 13;  // Led indication by blinking
 
 /**
  * @brief Call functions to blink led, get T° and H values, send UDP message and blink led again
