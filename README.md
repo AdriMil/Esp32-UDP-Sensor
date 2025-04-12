@@ -5,6 +5,8 @@
 <p align="justify">
 This repository provides the code to create an UDP Temperature and Humidity sensors.
 Wifi and UDP parameters (ssid, password, target IP, port and measurments frequency) are configurable through a web interface.
+
+Refer to [this documentation](docs/AccessPoint/README.md) to get more information about network configuration. 
 </p>
 
 ## Motivation
@@ -18,7 +20,7 @@ The domotic server can see when a UDP packet is sent on a given port.
 <img src="docs/Screenshots/NetworkDiagram.png" width="300"/>
 </p>
 <p align="center">
-  <b><u>Network diagram</u></b>
+  <b>Network diagram</b>
 </p>
 
 ### Constraints
@@ -43,16 +45,34 @@ If the sensors wake up while there is a wifi failure, it will start a power savi
 <img src="docs/Screenshots/Wiring.png" width=450/>
 </p>
 <p align="center">
-  <b><u>Wiring diagram</u></b>
+  <b>Wiring diagram</b>
 </p>
 
-### Comments
+#### Comments
 
 A [pull up wiring](https://learn.sparkfun.com/tutorials/pull-up-resistors/all) is used with resistors :
 
 - _When the button is pressed, the input pin is pulled low. The value of resistor controls how much current you want to flow from VCC, through the button, and then to ground._
 - _When the button is not pressed, the input pin is pulled high. The value of the pull-up resistor controls the voltage on the input pin._ 
 
+
+### Box modelisation
+
+A box has been designed (Fusion360) based on ESP32 size: 
+<p align="center">
+<img src="docs/Screenshots/Animation.gif" width="350px"/>
+</p>
+<p align="center">
+  <b>Box design</b>
+</p>
+
+### Final result
+<p align="center">
+<img src="docs/Screenshots/FinalBox.png" width=350/>
+</p>
+<p align="center">
+  <b>Final box</b>
+</p>
 
 ## Software
 
@@ -62,7 +82,30 @@ A [pull up wiring](https://learn.sparkfun.com/tutorials/pull-up-resistors/all) i
 <img src="docs/Screenshots/FunctionalDiagram.png"/>
 </p>
 <p align="center">
-  <b><u>Functional diagram</u></b>
+  <b>Functional diagram</b>
 </p>
 
 Refer to [this documentation](docs/AccessPoint/README.md) to get more information on the Access Point mode. 
+
+### Final result
+
+ Through my domotic server I have the following visualisation for temperatures over the time:
+ <p align="center">
+<img src="docs/Screenshots/Visualisation.png" width=550/>
+</p>
+<p align="center">
+  <b>Temperatures visualisation</b>
+</p>
+
+## What's next ? 
+
+
+- Hardware
+  - Power using 3V battery 
+
+- Software
+  - Easy update using OTA
+  - Auto-detect software update
+
+- Deployment
+  - Automaticaly generate binaries files using GitHub action
